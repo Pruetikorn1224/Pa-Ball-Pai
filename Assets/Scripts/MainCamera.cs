@@ -13,7 +13,7 @@ public class MainCamera : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        mainCharacter = GameObject.Find("Player");
+        mainCharacter = GameObject.FindGameObjectsWithTag("Player")[0];
 
         gameObject.transform.localPosition = mainCharacter.transform.position + cameraOffset;
         gameObject.transform.localRotation = Quaternion.Euler(cameraRotation);
@@ -22,8 +22,6 @@ public class MainCamera : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        mainCharacter = GameObject.Find("Player");
-
         transform.position = mainCharacter.transform.position + cameraOffset;
     }
 }

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class Ball : MonoBehaviour
 {
@@ -19,7 +20,7 @@ public class Ball : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        mainCharacter = GameObject.Find("Player");
+        mainCharacter = GameObject.FindGameObjectsWithTag("Player")[0];
 
         isThrowingBall = false;
         throwingDirection = Vector3.zero;
@@ -35,12 +36,10 @@ public class Ball : MonoBehaviour
 
             if (Physics.Raycast(rayCast, out hit))
             {
-                Vector3 targetPosition = hit.point;
-                targetPosition.y = transform.position.y;
-                throwingDirection = targetPosition - transform.position;
-                throwingDirection.Normalize();
-
-                isThrowingBall = true;
+                if (hit.collider.gameObject.tag != "Wall")
+                {
+                    StartCoroutine(ThrowingBall(rayCast));
+                }
             }
         }
 
@@ -52,8 +51,7 @@ public class Ball : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.Q) && isThrowingBall)
         {
-            mainCharacter.transform.position = transform.position;
-            transform.position = mainCharacter.transform.position + ballPositionOffset;
+            mainCharacter.transform.position = transform.position - ballPositionOffset;
             isThrowingBall = false;
         }
 #endif
@@ -68,7 +66,6 @@ public class Ball : MonoBehaviour
         else
         {
             throwingDirection = Vector3.zero;
-
             transform.position = mainCharacter.transform.position + ballPositionOffset;
         }
     }
@@ -77,12 +74,27 @@ public class Ball : MonoBehaviour
     {
         if (other.gameObject.tag == "Wall")
         {
-
+            throwingDirection = Vector3.Reflect(throwingDirection, other.contacts[0].normal);
+            throwingDirection.Normalize();
         }
-
         else if (other.gameObject.tag == "Enemy")
         {
-
+            Destroy(other.gameObject);
         }
+    }
+
+    IEnumerator ThrowingBall(Ray ray)
+    {
+        yield return new WaitForSeconds(0.25f);
+
+        transform.position = mainCharacter.transform.position + new Vector3(0f, transform.position.y - mainCharacter.transform.position.y, 0f);
+
+        float t = (transform.position.y - ray.origin.y) / ray.direction.y;
+        Vector3 targetPosition = ray.origin + ray.direction * t;
+
+        throwingDirection = targetPosition - transform.position;
+        throwingDirection.Normalize();
+
+        isThrowingBall = true;
     }
 }
