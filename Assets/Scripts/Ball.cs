@@ -77,23 +77,19 @@ public class Ball : MonoBehaviour
             throwingDirection = Vector3.Reflect(throwingDirection, other.contacts[0].normal);
             throwingDirection.Normalize();
         }
-        else if (other.gameObject.tag == "Enemy")
-        {
-            Destroy(other.gameObject);
-        }
     }
 
     IEnumerator ThrowingBall(Ray ray)
     {
         yield return new WaitForSeconds(0.25f);
 
-        transform.position = mainCharacter.transform.position + new Vector3(0f, transform.position.y - mainCharacter.transform.position.y, 0f);
-
         float t = (transform.position.y - ray.origin.y) / ray.direction.y;
         Vector3 targetPosition = ray.origin + ray.direction * t;
 
         throwingDirection = targetPosition - transform.position;
         throwingDirection.Normalize();
+
+        transform.position = mainCharacter.transform.position + new Vector3(throwingDirection.x, transform.position.y - mainCharacter.transform.position.y, throwingDirection.z);
 
         isThrowingBall = true;
     }
