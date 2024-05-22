@@ -15,12 +15,14 @@ public class Ball : MonoBehaviour
     [System.NonSerialized]
     public Vector3 throwingDirection;
 
+    LevelControl levelControl;
     GameObject mainCharacter;
 
     // Start is called before the first frame update
     void Start()
     {
         mainCharacter = GameObject.FindGameObjectsWithTag("Player")[0];
+        levelControl = GameObject.Find("Level Manager").GetComponent<LevelControl>();
 
         isThrowingBall = false;
         throwingDirection = Vector3.zero;
@@ -29,32 +31,35 @@ public class Ball : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButtonDown(0) && !isThrowingBall)
+        if (levelControl.levelState == 0)
         {
-            Ray rayCast = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
-
-            if (Physics.Raycast(rayCast, out hit))
+            if (Input.GetMouseButtonDown(0) && !isThrowingBall)
             {
-                if (hit.collider.gameObject.tag != "Wall")
+                Ray rayCast = Camera.main.ScreenPointToRay(Input.mousePosition);
+                RaycastHit hit;
+
+                if (Physics.Raycast(rayCast, out hit))
                 {
-                    StartCoroutine(ThrowingBall(rayCast));
+                    if (hit.collider.gameObject.tag != "Wall")
+                    {
+                        StartCoroutine(ThrowingBall(rayCast));
+                    }
                 }
             }
-        }
 
 #if UNITY_EDITOR
-        if (Input.GetKeyDown(KeyCode.E) && isThrowingBall)
-        {
-            transform.position = mainCharacter.transform.position + ballPositionOffset;
-            isThrowingBall = false;
-        }
-        if (Input.GetKeyDown(KeyCode.Q) && isThrowingBall)
-        {
-            mainCharacter.transform.position = transform.position - ballPositionOffset;
-            isThrowingBall = false;
-        }
+            if (Input.GetKeyDown(KeyCode.Q) && isThrowingBall)
+            {
+                transform.position = mainCharacter.transform.position + ballPositionOffset;
+                isThrowingBall = false;
+            }
+            if (Input.GetKeyDown(KeyCode.E) && isThrowingBall)
+            {
+                mainCharacter.transform.position = transform.position - ballPositionOffset;
+                isThrowingBall = false;
+            }
 #endif
+        }
     }
 
     private void FixedUpdate()

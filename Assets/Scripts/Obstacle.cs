@@ -12,22 +12,30 @@ public class Obstacle : MonoBehaviour
     [SerializeField] bool ballNotPass;
     [SerializeField] bool ballStop;
 
+    LevelControl levelControl;
+
+    private void Start()
+    {
+        levelControl = GameObject.Find("Level Manager").GetComponent<LevelControl>();
+    }
+
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.tag == "Ball" && ballNotPass)
+        if (other.gameObject.tag == "Ball" && ballNotPass && levelControl.levelState == 0)
         {
-            Destroy(other.gameObject);
+            levelControl.levelState = 1;
         }
 
-        else if (other.gameObject.tag == "Ball" && ballStop)
+        else if (other.gameObject.tag == "Ball" && ballStop && levelControl.levelState == 0)
         {
             Ball ball = other.gameObject.GetComponent<Ball>();
             ball.throwingDirection = Vector3.zero;
+            ball.isThrowingBall = false;
         }
 
-        else if (other.gameObject.tag == "Player" && playerNotPass)
+        else if (other.gameObject.tag == "Player" && playerNotPass && levelControl.levelState == 0)
         {
-            Destroy(other.gameObject);
+            levelControl.levelState = 1;
         }
     }
 }
