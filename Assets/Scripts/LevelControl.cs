@@ -37,7 +37,6 @@ public class LevelControl : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Debug.Log(respawnPosition);
         switch (levelState)
         {
             case 0:
@@ -77,6 +76,7 @@ public class LevelControl : MonoBehaviour
                 if (Input.GetKeyDown(KeyCode.R))
                 {
                     currentLives = maximumLives;
+                    respawnPosition = new Vector3(0, 1.125f, 0f); ;
                     for (int i = 0; i < players.Length; i++)
                     {
                         players[i].transform.position = new Vector3(0f, 1.125f, 0f);

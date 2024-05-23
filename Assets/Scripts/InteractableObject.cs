@@ -19,9 +19,24 @@ public class InteractableObject : MonoBehaviour
         levelControl = GameObject.Find("Level Manager").GetComponent<LevelControl>();
     }
 
-    private void OnTriggerEnter(Collider other)
+    void Update()
     {
-        if (other.gameObject.tag == "Player" && levelControl.levelState == 0)
+        if (levelControl.levelState == 1)
+        {
+            int count = (objectsDisappear.Count > objectsAppear.Count) ? objectsDisappear.Count : objectsAppear.Count;
+            for (int i = 0; i < count; i++)
+            {
+                if (i < objectsDisappear.Count)
+                    objectsDisappear[i].gameObject.SetActive(true);
+                if (i < objectsAppear.Count)
+                    objectsAppear[i].gameObject.SetActive(false);
+            }
+        }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.tag == "Player" && levelControl.levelState == 0)
         {
             int count = (objectsDisappear.Count > objectsAppear.Count) ? objectsDisappear.Count : objectsAppear.Count;
             for (int i = 0; i < count; i++)

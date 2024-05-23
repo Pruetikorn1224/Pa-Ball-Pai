@@ -55,7 +55,7 @@ public class Ball : MonoBehaviour
             }
             if (Input.GetKeyDown(KeyCode.E) && isThrowingBall)
             {
-                mainCharacter.transform.position = transform.position - ballPositionOffset;
+                mainCharacter.transform.position = transform.position - ballPositionOffset + new Vector3(0, 0.05f, 0);
                 isThrowingBall = false;
             }
 #endif

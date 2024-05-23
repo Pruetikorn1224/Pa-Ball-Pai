@@ -30,7 +30,6 @@ public class Obstacle : MonoBehaviour
         {
             Ball ball = other.gameObject.GetComponent<Ball>();
             ball.throwingDirection = Vector3.zero;
-            ball.isThrowingBall = false;
         }
 
         else if (other.gameObject.tag == "Player" && playerNotPass && levelControl.levelState == 0)
